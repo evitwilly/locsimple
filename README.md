@@ -29,3 +29,19 @@ Android library that allows you to determine your location in some lines!
 
 ## Download
 
+
+**1.** Add it in your root build.gradle at the end of repositories:
+
+      allprojects {
+            repositories {
+                  ...
+                  maven { url 'https://jitpack.io' }
+            }
+      }
+
+**2.** Add the dependency:
+
+      dependencies {
+            implementation 'com.github.KiberneticWorm:locsimple:9f6f1a4ccf'
+      }
+
