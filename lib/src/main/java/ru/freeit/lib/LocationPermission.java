@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -22,14 +23,17 @@ class LocationPermission {
     private final ActivityResultLauncher<String[]> launcher;
     private final Runnable isAllowed;
 
-    public LocationPermission(final Context context, final ActivityResultCaller caller, final Runnable isAllowed, final Runnable isDenied) {
+    public LocationPermission(
+            final Context context,
+            final ActivityResultCaller caller, final Runnable isAllowed,
+            final Runnable isDenied) {
         this.context = context;
         this.isAllowed = isAllowed;
         launcher = caller.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
             for (boolean granted : result.values()) {
                 if (granted) {
                     isAllowed.run();
-                    break;
+                    return;
                 }
             }
             isDenied.run();

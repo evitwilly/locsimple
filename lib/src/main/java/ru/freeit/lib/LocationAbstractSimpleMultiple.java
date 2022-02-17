@@ -12,8 +12,8 @@ class LocationAbstractSimpleMultiple extends LocationAbstractSimple {
     public void findMyLocation() {
         locationLastKnown.location();
         service.startService(context, location -> {
-            if (callback != null) {
-                callback.onLocation(location);
+            if (simpleCallback != null) {
+                simpleCallback.onLocation(location);
             }
         });
     }

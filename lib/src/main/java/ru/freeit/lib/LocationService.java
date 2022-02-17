@@ -20,14 +20,12 @@ class LocationService implements DefaultLifecycleObserver {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private final float minDistanceMeters = 10f;
-    private final long intervalMillis = 5000L;
+    private final float minDistanceMeters = 1f;
+    private final long intervalMillis = 1000L;
 
-    private final LifecycleOwner lifecycleOwner;
 
 
     public LocationService(final LifecycleOwner lifecycleOwner) {
-        this.lifecycleOwner = lifecycleOwner;
         lifecycleOwner.getLifecycle().addObserver(this);
     }
 

@@ -13,12 +13,12 @@ public class LocationSimple extends LocationAbstractSimple {
     @Override
     public void findMyLocation() {
         final Location myLocation = locationLastKnown.location();
-        if (myLocation != null && callback != null) {
-            callback.onLocation(myLocation);
+        if (myLocation != null && simpleCallback != null) {
+            simpleCallback.onLocation(myLocation);
         } else {
             service.startService(context, location -> {
-                if (callback != null) {
-                    callback.onLocation(location);
+                if (simpleCallback != null) {
+                    simpleCallback.onLocation(location);
                     service.stopService();
                 }
             });

@@ -3,6 +3,7 @@ package ru.freeit.locsimple
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.FrameLayout
@@ -25,6 +26,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(frameLayout)
 
         val simple = LocationSimple(this)
+        simple.onPermissionDenied {
+            Log.d("TEST_", "permission is denied")
+        }
+        simple.onLocationShutdown {
+            Log.d("TEST_", "location is shutdown")
+        }
 
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"
