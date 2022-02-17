@@ -2,7 +2,7 @@
 
 Android library that allows you to determine your location in some lines!
 
-#### Example:
+#### Example 1. Using:
 
     class MainActivity : AppCompatActivity() {
     
@@ -27,6 +27,25 @@ Android library that allows you to determine your location in some lines!
         
     }
 
+#### Example 2. Callbacks:
+
+        val simple = LocationSimple(this)
+
+        // user has rejected Location permission
+        simple.onPermissionDenied {
+            Log.d("TEST_", "permission is denied")
+        }
+
+        // user turned off location sharing
+        simple.onLocationShutdown {
+            Log.d("TEST_", "location is shutdown")
+        }
+
+        simple.defineLocation { location ->
+            locationText.text = "${location.latitude}\n${location.longitude}"
+        }
+
+
 ## Download
 
 
@@ -42,6 +61,6 @@ Android library that allows you to determine your location in some lines!
 **2.** Add the dependency:
 
       dependencies {
-            implementation 'com.github.KiberneticWorm:locsimple:9f6f1a4ccf'
+            implementation 'com.github.KiberneticWorm:locsimple:24ba2c49c3'
       }
 
