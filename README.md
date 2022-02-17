@@ -15,7 +15,7 @@ Android library that allows you to determine your location in some lines!
             // Step 1. create LocationSimple object
             val simple = LocationSimple(this)
 
-            // Step 2. call defineLocaion() method and pass a callback to it  
+            // Step 2. call defineLocation() method and pass a callback to it  
             simple.defineLocation { location ->
             
                 // Step 3. get Location object and use it
