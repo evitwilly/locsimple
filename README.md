@@ -2,7 +2,7 @@
 
 Android library that allows you to determine your location in some lines!
 
-#### Example 1. Using:
+#### Example 1. Simple using:
 
     class MainActivity : AppCompatActivity() {
     
@@ -12,8 +12,8 @@ Android library that allows you to determine your location in some lines!
 
             val locationText = findViewById<TextView>(R.id.location_text)
 
-            // Step 1. create LocationSimple object
-            val simple = LocationSimple(this)
+            // Step 1. create LocationSimpleSingle object
+            val simple = LocationSimpleSingle(this)
 
             // Step 2. call defineLocation() method and pass a callback to it  
             simple.defineLocation { location ->
@@ -29,7 +29,7 @@ Android library that allows you to determine your location in some lines!
 
 #### Example 2. Callbacks:
 
-        val simple = LocationSimple(this)
+        val simple = LocationSimpleSingle(this)
 
         // user has rejected Location permission
         simple.onPermissionDenied {
@@ -41,6 +41,17 @@ Android library that allows you to determine your location in some lines!
             Log.d("TEST_", "location is shutdown")
         }
 
+        simple.defineLocation { location ->
+            locationText.text = "${location.latitude}\n${location.longitude}"
+        }
+
+
+#### Example 3. Listen location changes
+
+        // Step 1. create LocationSimpleMultiple object
+        val simple = LocationSimpleMultiple(this)
+
+        // Step 2. listen location changes
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"
         }
@@ -61,6 +72,6 @@ Android library that allows you to determine your location in some lines!
 **2.** Add the dependency:
 
       dependencies {
-            implementation 'com.github.KiberneticWorm:locsimple:24ba2c49c3'
+            implementation 'com.github.KiberneticWorm:locsimple:25ca12fedd'
       }
 
