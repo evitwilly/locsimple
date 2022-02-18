@@ -20,13 +20,16 @@ class MainActivity : AppCompatActivity() {
         locationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
         locationText.setTextColor(Color.rgb(0, 0, 0))
         locationText.gravity = Gravity.CENTER
-        locationText.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+        locationText.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
             gravity = Gravity.CENTER
         }
         frameLayout.addView(locationText)
         setContentView(frameLayout)
 
-        val simple = LocationSimpleMultiple(this)
+        val simple = LocationSimpleSingle(this)
 
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"
