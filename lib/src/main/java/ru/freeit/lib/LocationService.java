@@ -5,7 +5,9 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.core.location.LocationListenerCompat;
@@ -13,49 +15,90 @@ import androidx.core.location.LocationManagerCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import java.util.List;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.Task;
 
+import java.util.List;
 
 class LocationService implements DefaultLifecycleObserver {
     private LocationManager locationManager;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private SettingsClient settingsClient;
+
+    private LocationCallback locationCallback;
     private LocationListener locationListener;
 
     private final float minDistanceMeters = 1f;
     private final long intervalMillis = 1000L;
-
-
 
     public LocationService(final LifecycleOwner lifecycleOwner) {
         lifecycleOwner.getLifecycle().addObserver(this);
     }
 
     public void startService(final Context context, final LocationServiceListener listener) {
-        if (locationListener == null || locationManager == null) {
-            locationListener = new LocationListenerCompat() {
+        if (LocationBuildVersion.isAndroid12()) {
+            if (locationCallback == null || fusedLocationProviderClient == null) {
+                locationCallback = new LocationCallback() {
+                    @Override
+                    public void onLocationResult(@NonNull LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        final Location location = locationResult.getLastLocation();
+                        if (location != null) {
+                            listener.onLocation(location);
+                        }
+                    }
 
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                    listener.onLocation(location);
-                }
+                    @Override
+                    public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
+                        super.onLocationAvailability(locationAvailability);
+                        // TODO(don't forget to add Location Availability handling)
+                    }
+                };
+                settingsClient = LocationServices.getSettingsClient(context);
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+            }
+        } else {
+            if (locationListener == null || locationManager == null) {
+                locationListener = new LocationListenerCompat() {
 
-                @Override
-                public void onProviderEnabled(@NonNull String provider) {
-                    final int num = 1 + 2;
-                }
+                    @Override
+                    public void onLocationChanged(@NonNull Location location) {
+                        if (location != null) {
+                            listener.onLocation(location);
+                        }
+                    }
 
-                @Override
-                public void onProviderDisabled(@NonNull String provider) {
-                    final int num = 1 + 2;
-                }
-            };
-            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            startLocationUpdates();
+                    @Override
+                    public void onProviderEnabled(@NonNull String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(@NonNull String provider) {
+
+                    }
+                };
+                locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            }
         }
+        startLocationUpdates();
     }
 
     @SuppressLint("MissingPermission")
     public void stopService() {
-        if (locationListener != null && locationManager != null) {
+        if (LocationBuildVersion.isAndroid12() && locationCallback != null && fusedLocationProviderClient != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+            locationCallback = null;
+        } else if (locationListener != null && locationManager != null) {
             locationManager.removeUpdates(locationListener);
             locationListener = null;
         }
@@ -63,7 +106,13 @@ class LocationService implements DefaultLifecycleObserver {
 
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
-        if (locationListener != null && locationManager != null) {
+        if (LocationBuildVersion.isAndroid12() && locationCallback != null && fusedLocationProviderClient != null) {
+            final LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setInterval(5000L);
+            locationRequest.setFastestInterval(1000L);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        } else if (locationListener != null && locationManager != null) {
             boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if (isNetworkEnabled) {

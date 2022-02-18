@@ -8,7 +8,8 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
-import ru.freeit.lib.LocationSimple
+import ru.freeit.lib.LocationSimpleMultiple
+import ru.freeit.lib.LocationSimpleSingle
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,13 +26,7 @@ class MainActivity : AppCompatActivity() {
         frameLayout.addView(locationText)
         setContentView(frameLayout)
 
-        val simple = LocationSimple(this)
-        simple.onPermissionDenied {
-            Log.d("TEST_", "permission is denied")
-        }
-        simple.onLocationShutdown {
-            Log.d("TEST_", "location is shutdown")
-        }
+        val simple = LocationSimpleMultiple(this)
 
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"
