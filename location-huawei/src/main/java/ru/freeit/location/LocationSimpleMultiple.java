@@ -48,14 +48,17 @@ public class LocationSimpleMultiple extends LocationAbstractSimple {
     @Override
     public void findMyLocation() {
         service.startService(context, location -> {
-            if (simpleCallback != null) {
+
+            if (simpleCallback != null)
                 simpleCallback.onLocation(location);
-            }
-        });
+
+        }, providerDisabledCallback);
+
         locationLastKnown.location(lastKnownLocation -> {
-            if (simpleCallback != null && lastKnownLocation != null) {
+
+            if (simpleCallback != null && lastKnownLocation != null)
                 simpleCallback.onLocation(lastKnownLocation);
-            }
+
         });
     }
 }

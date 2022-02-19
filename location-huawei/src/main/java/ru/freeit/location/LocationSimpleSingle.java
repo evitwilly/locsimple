@@ -56,7 +56,7 @@ public class LocationSimpleSingle extends LocationAbstractSimple {
                         simpleCallback.onLocation(location);
                         service.stopService();
                     }
-                });
+                }, providerDisabledCallback);
             }
         });
     }

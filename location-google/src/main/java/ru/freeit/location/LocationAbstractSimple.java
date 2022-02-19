@@ -9,16 +9,18 @@ import androidx.lifecycle.LifecycleOwner;
 
 abstract class LocationAbstractSimple {
     protected final Context context;
-    private final LocationPermission locationPermission;
-    private final LocationProvider provider;
+
+    protected LocationSimpleCallback simpleCallback;
+    protected LocationProviderDisabledCallback providerDisabledCallback;
+
     protected final LocationService service;
     protected final LocationLastKnown locationLastKnown;
-    private final LocationModeActivityResultContract locationModeActivityResultContract;
 
+    private final LocationPermission locationPermission;
+    private final LocationProvider provider;
+    private final LocationModeActivityResultContract locationModeActivityResultContract;
     private LocationPermissionDeniedCallback deniedCallback;
     private LocationShutdownCallback shutdownCallback;
-    protected LocationSimpleCallback simpleCallback;
-
 
     private LocationAbstractSimple(
             final Context context,
@@ -33,33 +35,13 @@ abstract class LocationAbstractSimple {
         this.service = new LocationService(owner, locationRequestSettings);
 
         this.locationModeActivityResultContract = new LocationModeActivityResultContract(caller, () -> {
-            provider.checkEnabled(new LocationProviderCallback() {
-                @Override
-                public void onEnabled() {
-                    findMyLocation();
-                }
-
-                @Override
-                public void onDisabled() {
-                    if (shutdownCallback != null) {
-                        shutdownCallback.onShutdown();
-                    }
-                }
-            });
+            if (provider.isEnabled()) findMyLocation();
+            else if (shutdownCallback != null) shutdownCallback.onShutdown();
         });
 
         locationPermission = new LocationPermission(context, neededLocationPermission, caller, () -> {
-            provider.checkEnabled(new LocationProviderCallback() {
-                @Override
-                public void onEnabled() {
-                    findMyLocation();
-                }
-
-                @Override
-                public void onDisabled() {
-                    locationModeActivityResultContract.openLocationSettings();
-                }
-            });
+            if (provider.isEnabled()) findMyLocation();
+            else locationModeActivityResultContract.openLocationSettings();
         }, () -> {
             if (deniedCallback != null) {
                 deniedCallback.onPermissionDenied();
@@ -106,6 +88,10 @@ abstract class LocationAbstractSimple {
 
     public void onLocationShutdown(final LocationShutdownCallback shutdownCallback) {
         this.shutdownCallback = shutdownCallback;
+    }
+
+    public void onProviderDisabled(final LocationProviderDisabledCallback disabledCallback) {
+        this.providerDisabledCallback = disabledCallback;
     }
 
     public void defineLocation(final LocationSimpleCallback callback) {

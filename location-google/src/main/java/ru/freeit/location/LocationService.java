@@ -17,58 +17,28 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 class LocationService implements DefaultLifecycleObserver {
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationCallback locationCallback;
-
+    private final LocationProviderClient locationProviderClient;
     private final LocationRequestSettings requestSettings;
 
     public LocationService(final LifecycleOwner lifecycleOwner, final LocationRequestSettings requestSettings) {
         lifecycleOwner.getLifecycle().addObserver(this);
         this.requestSettings = requestSettings;
+        this.locationProviderClient = new LocationProviderClientGoogle();
     }
 
     public LocationService(final LifecycleOwner lifecycleOwner) {
         this(lifecycleOwner, new LocationRequestSettings());
     }
 
-    public void startService(final Context context, final LocationServiceListener listener) {
-        if (locationCallback == null || fusedLocationProviderClient == null) {
-            locationCallback = new LocationCallback() {
-                @Override
-                public void onLocationResult(@NonNull LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
-                    final Location location = locationResult.getLastLocation();
-                    if (location != null) {
-                        listener.onLocation(location);
-                    }
-                }
-
-                @Override
-                public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
-                    super.onLocationAvailability(locationAvailability);
-                    // TODO(don't forget to add Location Availability handling)
-                }
-            };
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-            startLocationUpdates();
-        }
+    public void startService(final Context context, final LocationServiceListener listener, final LocationProviderDisabledCallback disabledCallback) {
+        locationProviderClient.initialize(context, listener, disabledCallback);
+        locationProviderClient.startLocationUpdates(requestSettings);
     }
 
     @SuppressLint("MissingPermission")
-    public void stopService() {
-        if (locationCallback != null && fusedLocationProviderClient != null) {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-            locationCallback = null;
-        }
-    }
-
+    public void stopService() { locationProviderClient.stopLocationUpdates(); }
     @SuppressLint("MissingPermission")
-    private void startLocationUpdates() {
-        if (fusedLocationProviderClient != null && locationCallback != null) {
-            final LocationRequest locationRequest = requestSettings.locationRequest();
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-        }
-    }
+    private void startLocationUpdates() { locationProviderClient.startLocationUpdates(requestSettings); }
 
     @Override
     public void onResume(@NonNull LifecycleOwner owner) { startLocationUpdates(); }

@@ -13,6 +13,7 @@ abstract class LocationAbstractSimple {
     protected final LocationLastKnown locationLastKnown;
     protected final LocationService service;
     protected LocationSimpleCallback simpleCallback;
+    protected LocationProviderDisabledCallback providerDisabledCallback;
 
     private final LocationPermission locationPermission;
     private final LocationProvider provider;
@@ -85,6 +86,10 @@ abstract class LocationAbstractSimple {
 
     public void onLocationShutdown(final LocationShutdownCallback shutdownCallback) {
         this.shutdownCallback = shutdownCallback;
+    }
+
+    public void onProviderDisabled(final LocationProviderDisabledCallback disabledCallback) {
+        this.providerDisabledCallback = disabledCallback;
     }
 
     public void defineLocation(final LocationSimpleCallback callback) {
