@@ -1,3 +1,5 @@
+![locsimple](https://github.com/evitwilly/locsimple/blob/master/images/logo.png)
+
 # locsimple
 
 Android library that allows you to determine your location in some lines!
