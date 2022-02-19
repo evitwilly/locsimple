@@ -12,27 +12,11 @@ import ru.freeit.location.*
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        val frameLayout = FrameLayout(this)
-        val locationText = AppCompatTextView(this)
-        locationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
-        locationText.setTextColor(Color.rgb(0, 0, 0))
-        locationText.gravity = Gravity.CENTER
-        locationText.layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.CENTER
-        }
-        frameLayout.addView(locationText)
-        setContentView(frameLayout)
+        val locationText = findViewById<AppCompatTextView>(R.id.location_text)
 
-        val simple = LocationSimpleMultiple(this, NeededLocationPermission.EXACTLY, LocationRequestSettings()
-            .changedPriority(LocationPriority.HIGH_ACCURACY)
-            .changedInterval(5_000L)
-            .changedWaitForAccurateLocation(false)
-            .changedFastestInterval(1_000L))
-
+        val simple = LocationSimpleSingle(this, NeededLocationPermission.EXACTLY)
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"
         }

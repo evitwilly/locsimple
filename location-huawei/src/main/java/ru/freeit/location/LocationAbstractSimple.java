@@ -1,6 +1,7 @@
 package ru.freeit.location;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultCaller;
@@ -9,16 +10,16 @@ import androidx.lifecycle.LifecycleOwner;
 
 abstract class LocationAbstractSimple {
     protected final Context context;
+    protected final LocationLastKnown locationLastKnown;
+    protected final LocationService service;
+    protected LocationSimpleCallback simpleCallback;
+
     private final LocationPermission locationPermission;
     private final LocationProvider provider;
-    protected final LocationService service;
-    protected final LocationLastKnown locationLastKnown;
     private final LocationModeActivityResultContract locationModeActivityResultContract;
 
     private LocationPermissionDeniedCallback deniedCallback;
     private LocationShutdownCallback shutdownCallback;
-    protected LocationSimpleCallback simpleCallback;
-
 
     private LocationAbstractSimple(
             final Context context,
@@ -30,40 +31,18 @@ abstract class LocationAbstractSimple {
         this.context = context;
         this.provider = new LocationProvider(context);
         this.locationLastKnown = new LocationLastKnown(context);
-        this.service = new LocationService(owner, locationRequestSettings);
+        this.service = new LocationService(context, owner, locationRequestSettings);
 
         this.locationModeActivityResultContract = new LocationModeActivityResultContract(caller, () -> {
-            provider.checkEnabled(new LocationProviderCallback() {
-                @Override
-                public void onEnabled() {
-                    findMyLocation();
-                }
-
-                @Override
-                public void onDisabled() {
-                    if (shutdownCallback != null) {
-                        shutdownCallback.onShutdown();
-                    }
-                }
-            });
+            if (provider.isEnabled()) findMyLocation();
+            else if (shutdownCallback != null) shutdownCallback.onShutdown();
         });
 
         locationPermission = new LocationPermission(context, neededLocationPermission, caller, () -> {
-            provider.checkEnabled(new LocationProviderCallback() {
-                @Override
-                public void onEnabled() {
-                    findMyLocation();
-                }
-
-                @Override
-                public void onDisabled() {
-                    locationModeActivityResultContract.openLocationSettings();
-                }
-            });
+            if (provider.isEnabled()) findMyLocation();
+            else locationModeActivityResultContract.openLocationSettings();
         }, () -> {
-            if (deniedCallback != null) {
-                deniedCallback.onPermissionDenied();
-            }
+            if (deniedCallback != null) deniedCallback.onPermissionDenied();
         });
 
     }

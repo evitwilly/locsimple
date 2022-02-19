@@ -1,6 +1,5 @@
 package ru.freeit.location;
 
-import com.google.android.gms.location.LocationRequest;
 
 public final class LocationRequestSettings {
     private final LocationPriority priority;
@@ -62,9 +61,9 @@ public final class LocationRequestSettings {
                 smallestDisplacement, maxTime, isWaitForAccurateLocation);
     }
 
-    LocationRequest locationRequest() {
-        final LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(priority.priority());
+    com.google.android.gms.location.LocationRequest locationRequestGoogle() {
+        final com.google.android.gms.location.LocationRequest locationRequest = com.google.android.gms.location.LocationRequest.create();
+        locationRequest.setPriority(priority.priorityGoogle());
         if (interval >= 0) {
             locationRequest.setInterval(interval);
         }
@@ -83,4 +82,27 @@ public final class LocationRequestSettings {
         locationRequest.setWaitForAccurateLocation(isWaitForAccurateLocation);
         return locationRequest;
     }
+
+    com.huawei.hms.location.LocationRequest locationRequestHuawei() {
+        final com.huawei.hms.location.LocationRequest locationRequest = com.huawei.hms.location.LocationRequest.create();
+        locationRequest.setPriority(priority.priorityHuawei());
+        if (interval >= 0) {
+            locationRequest.setInterval(interval);
+        }
+        if (fastestInterval >= 0) {
+            locationRequest.setFastestInterval(fastestInterval);
+        }
+        if (numUpdates > 0) {
+            locationRequest.setNumUpdates(numUpdates);
+        }
+        if (smallestDisplacement >= 0f) {
+            locationRequest.setSmallestDisplacement(smallestDisplacement);
+        }
+        if (maxTime > 0) {
+            locationRequest.setMaxWaitTime(maxTime);
+        }
+        return locationRequest;
+    }
+
+
 }
