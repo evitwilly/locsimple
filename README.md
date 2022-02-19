@@ -4,76 +4,106 @@
 
 Android library that allows you to determine your location in some lines!
 
-#### Example 1. Simple using:
+Benefits:
+- automatic processing of permissions
+- processing of enabling and disabling the transfer of location data on the device
+- android 12 support
+- you can customize the location service more precisely
+- additional callbacks
+- support for Huawei devices without Google services
+
+## Get started
+
+#### Define my location:
 
     class MainActivity : AppCompatActivity() {
-    
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_main)
 
-            val locationText = findViewById<TextView>(R.id.location_text)
+            val locationText = findViewById<AppCompatTextView>(R.id.location_text)
 
-            // Step 1. create LocationSimpleSingle object
+            // use LocationSimpleSingle to determine the location once (in most cases)
             val simple = LocationSimpleSingle(this)
-
-            // Step 2. call defineLocation() method and pass a callback to it  
+            
+            // location is android.Location object
             simple.defineLocation { location ->
-            
-                // Step 3. get Location object and use it
                 locationText.text = "${location.latitude}\n${location.longitude}"
-                
             }
-            
         }
-        
     }
 
-#### Example 2. Callbacks:
+#### Listen location changes:
 
-        val simple = LocationSimpleSingle(this)
+    class MainActivity : AppCompatActivity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
 
-        // user has rejected Location permission
-        simple.onPermissionDenied {
-            Log.d("TEST_", "permission is denied")
+            val locationText = findViewById<AppCompatTextView>(R.id.location_text)
+            
+            // use LocationSimpleMultiple to listen to a new location (only foreground)
+            val simple = LocationSimpleMultiple(this)
+            
+            // location is android.Location object
+            simple.defineLocation { location ->
+                locationText.text = "${location.latitude}\n${location.longitude}"
+            }
         }
+    }
 
-        // user turned off location sharing
-        simple.onLocationShutdown {
-            Log.d("TEST_", "location is shutdown")
+#### Additional callbacks
+
+    class MainActivity : AppCompatActivity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
+
+            val locationText = findViewById<AppCompatTextView>(R.id.location_text)
+
+            val simple = LocationSimpleSingle(this)
+
+            simple.onPermissionDenied { 
+                // permission is denied
+            }
+
+            simple.onLocationShutdown { 
+                // location mode is off
+            }
+
+            simple.defineLocation { location ->
+                locationText.text = "${location.latitude}\n${location.longitude}"
+            }
         }
+    }
 
-        simple.defineLocation { location ->
-            locationText.text = "${location.latitude}\n${location.longitude}"
+
+#### Customizing the location service
+
+     class MainActivity : AppCompatActivity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
+
+            val locationText = findViewById<AppCompatTextView>(R.id.location_text)
+
+            // use NeededLocationPermission to indicate an exact or inaccurate location (on android 12 is ignored)
+            // use LocationRequestSettings to customize the location service
+            val simple = LocationSimpleMultiple(this, NeededLocationPermission.EXACTLY, LocationRequestSettings()
+                .changedInterval(5000L)
+                .changedFastestInterval(1000L)
+                .changedPriority(LocationPriority.HIGH_ACCURACY))
+
+            simple.defineLocation { location ->
+                locationText.text = "${location.latitude}\n${location.longitude}"
+            }
         }
+    }
 
 
-#### Example 3. Listen location changes
-
-        // Step 1. create LocationSimpleMultiple object
-        val simple = LocationSimpleMultiple(this)
-
-        // Step 2. listen location changes
-        simple.defineLocation { location ->
-            locationText.text = "${location.latitude}\n${location.longitude}"
-        }
-
+Learn more about <code>LocationRequestSettings</code> options <a href="https://developer.android.com/training/location/change-location-settings">see link</a>
 
 ## Download
 
-
-**1.** Add it in your root build.gradle at the end of repositories:
-
-      allprojects {
-            repositories {
-                  ...
-                  maven { url 'https://jitpack.io' }
-            }
-      }
-
-**2.** Add the dependency:
-
-      dependencies {
-            implementation 'com.github.KiberneticWorm:locsimple:25ca12fedd'
-      }
+I don't know how to add my lib to the maven repository yet, so you can only download the source code and follow the video instructions:
 
