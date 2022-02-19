@@ -52,7 +52,7 @@ Benefits:
         }
     }
 
-#### Additional callbacks
+#### Additional callbacks:
 
     class MainActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +78,7 @@ Benefits:
     }
 
 
-#### Customizing the location service
+#### Customizing the location service:
 
      class MainActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
