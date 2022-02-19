@@ -7,7 +7,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
-import ru.freeit.location.LocationSimpleSingle
+import ru.freeit.location.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,11 @@ class MainActivity : AppCompatActivity() {
         frameLayout.addView(locationText)
         setContentView(frameLayout)
 
-        val simple = LocationSimpleSingle(this)
+        val simple = LocationSimpleMultiple(this, NeededLocationPermission.EXACTLY, LocationRequestSettings()
+            .changedPriority(LocationPriority.HIGH_ACCURACY)
+            .changedInterval(5_000L)
+            .changedWaitForAccurateLocation(false)
+            .changedFastestInterval(1_000L))
 
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"

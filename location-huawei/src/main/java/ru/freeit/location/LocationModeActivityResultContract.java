@@ -1,6 +1,5 @@
 package ru.freeit.location;
 
-import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 
