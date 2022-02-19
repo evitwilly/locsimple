@@ -16,7 +16,11 @@ class MainActivity : AppCompatActivity() {
 
         val locationText = findViewById<AppCompatTextView>(R.id.location_text)
 
-        val simple = LocationSimpleSingle(this, NeededLocationPermission.EXACTLY)
+        val simple = LocationSimpleMultiple(this, NeededLocationPermission.EXACTLY, LocationRequestSettings()
+            .changedInterval(5000L)
+            .changedFastestInterval(1000L)
+            .changedPriority(LocationPriority.HIGH_ACCURACY))
+
         simple.defineLocation { location ->
             locationText.text = "${location.latitude}\n${location.longitude}"
         }
