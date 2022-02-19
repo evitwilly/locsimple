@@ -3,13 +3,11 @@ package ru.freeit.locsimple
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
-import ru.freeit.lib.LocationSimpleMultiple
-import ru.freeit.lib.LocationSimpleSingle
+import ru.freeit.location.LocationSimpleSingle
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
