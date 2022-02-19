@@ -1,4 +1,4 @@
-![locsimple](https://github.com/evitwilly/locsimple/blob/master/images/logo.png)
+![locsimple](https://github.com/evitwilly/locsimple/blob/master/assets/logo.png)
 
 # locsimple
 
@@ -106,4 +106,6 @@ Learn more about <code>LocationRequestSettings</code> options <a href="https://d
 ## Download
 
 I don't know how to add my lib to the maven repository yet, so you can only download the source code and follow the video instructions:
+
+[![demo](https://img.youtube.com/vi/y5Cgzd7hink/0.jpg)](https://www.youtube.com/watch?v=y5Cgzd7hink)
 
