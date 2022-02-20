@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/location-google" />
+            <option value="$PROJECT_DIR$/location-google-huawei" />
             <option value="$PROJECT_DIR$/location-huawei" />
           </set>
         </option>

@@ -10,4 +10,5 @@ dependencyResolutionManagement {
 rootProject.name = "locsimple"
 include ':app'
 include ':location-google'
+include ':location-google-huawei'
 include ':location-huawei'

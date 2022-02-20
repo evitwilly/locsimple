@@ -61,6 +61,28 @@ public final class LocationRequestSettings {
                 smallestDisplacement, maxTime, isWaitForAccurateLocation);
     }
 
+    com.google.android.gms.location.LocationRequest locationRequestGoogle() {
+        final com.google.android.gms.location.LocationRequest locationRequest = com.google.android.gms.location.LocationRequest.create();
+        locationRequest.setPriority(priority.priorityGoogle());
+        if (interval >= 0) {
+            locationRequest.setInterval(interval);
+        }
+        if (fastestInterval >= 0) {
+            locationRequest.setFastestInterval(fastestInterval);
+        }
+        if (numUpdates > 0) {
+            locationRequest.setNumUpdates(numUpdates);
+        }
+        if (smallestDisplacement >= 0f) {
+            locationRequest.setSmallestDisplacement(smallestDisplacement);
+        }
+        if (maxTime > 0) {
+            locationRequest.setMaxWaitTime(maxTime);
+        }
+        locationRequest.setWaitForAccurateLocation(isWaitForAccurateLocation);
+        return locationRequest;
+    }
+
     com.huawei.hms.location.LocationRequest locationRequestHuawei() {
         final com.huawei.hms.location.LocationRequest locationRequest = com.huawei.hms.location.LocationRequest.create();
         locationRequest.setPriority(priority.priorityHuawei());

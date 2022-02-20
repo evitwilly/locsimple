@@ -1,6 +1,7 @@
 package ru.freeit.location;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultCaller;
@@ -31,7 +32,7 @@ abstract class LocationAbstractSimple {
         this.context = context;
         this.provider = new LocationProvider(context);
         this.locationLastKnown = new LocationLastKnown(context);
-        this.service = new LocationService(owner, locationRequestSettings);
+        this.service = new LocationService(context, owner, locationRequestSettings);
 
         this.locationModeActivityResultContract = new LocationModeActivityResultContract(caller, () -> {
             if (provider.isEnabled()) findMyLocation();
