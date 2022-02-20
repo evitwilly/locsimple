@@ -12,6 +12,13 @@ Benefits:
 - additional callbacks
 - support for Huawei devices without Google services
 
+My lib consists of three modules:
+- location-google: location using Google services (only works on devices with google services)
+- location-huawei: location using Huawei services
+- location-google-huawei: uses Google services if available otherwise Huawei services
+
+Use one of them.
+
 ## Get started
 
 #### Define my location:
